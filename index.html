@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GROK LAB — Playground of Primitives</title>
+<meta name="description" content="Turn knobs. Watch structure appear. Probability, primes, fractals, life, waves, matter, symmetry, and a small desk of tools." />
+<style>
+:root{--bg:#07070b;--bg2:#101018;--card:#16161f;--line:#2a2a38;--ink:#f4f0e6;--muted:#9b9688;--lime:#d6ff4a;--violet:#9b7dff;--cyan:#5ce1ff;--rose:#ff6b9d;--warn:#ffb020}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Helvetica,Arial;background:var(--bg);color:var(--ink);line-height:1.45}
+a{color:var(--cyan);text-decoration:none}button,input,select,textarea{font:inherit}
+.nav{position:sticky;top:0;z-index:40;display:flex;gap:14px;align-items:center;padding:10px 18px;background:rgba(7,7,11,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{font-weight:800;letter-spacing:.08em;color:var(--lime)}
+.nav a{color:var(--muted);font-size:13px}.nav a:hover{color:var(--ink)}
+.nav .cta{margin-left:auto;background:var(--lime);color:#111;border:0;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 18px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;padding:36px 0 10px}
+.kicker{color:var(--lime);letter-spacing:.16em;font-size:12px;font-weight:700}
+h1{font-size:clamp(36px,7vw,72px);line-height:.95;margin:8px 0 12px;letter-spacing:-.04em}
+.lead{color:var(--muted);font-size:18px;max-width:52ch}
+.hero-card{background:linear-gradient(160deg,#1a1a28,#12121c 55%,#1c1630);border:1px solid var(--line);border-radius:20px;padding:18px}
+.count{display:flex;gap:10px}.count b{display:block;font-size:28px;color:var(--lime)}.count span{color:var(--muted);font-size:11px}
+.grid{display:grid;gap:14px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h3{margin:0 0 8px}.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--muted);cursor:pointer}
+.chip.on,.chip:hover{border-color:var(--lime);color:var(--lime)}
+.lab{margin:28px 0;scroll-margin-top:72px}
+.lab h2{margin:0 0 8px;font-size:28px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.btn{background:#222232;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.btn:hover{border-color:var(--lime)}
+.btn.pri{background:var(--lime);color:#111;border:0;font-weight:700}
+.btn.danger{border-color:var(--rose);color:var(--rose)}
+canvas{display:block;width:100%;background:#0b0b12;border-radius:12px;border:1px solid var(--line)}
+label.sl{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:4px;height:160px;padding:8px;background:#0b0b12;border-radius:12px;border:1px solid var(--line)}
+.bars i{flex:1;background:linear-gradient(180deg,var(--lime),var(--violet));border-radius:4px 4px 0 0;position:relative;min-height:2px}
+.stat{font-variant-numeric:tabular-nums;color:var(--cyan)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.col{background:#0f0f16;border:1px dashed var(--line);border-radius:12px;min-height:220px;padding:8px}
+.item{background:#1b1b28;border-radius:10px;padding:8px;margin:8px 0;cursor:grab}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--lime);color:#111;padding:12px 16px;border-radius:12px;font-weight:700;display:none;z-index:50}
+footer{border-top:1px solid var(--line);color:var(--muted);padding:28px 18px;margin-top:40px}
+.map{height:180px;border-radius:12px;border:1px dashed var(--line);display:grid;place-items:center;color:var(--muted);background:repeating-linear-gradient(45deg,#101018 0 10px,#141422 10px 20px)}
+@media(max-width:800px){.hero,.g3,.g2,.g4,.cols{grid-template-columns:1fr}.nav{overflow:auto}}
+.hidden{display:none}
+.play{outline:2px solid var(--lime)}
+.kbd{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">GROK LAB</div>
+  <a href="#agenda">Agenda</a>
+  <a href="#labs">Labs</a>
+  <a href="#tickets">Access</a>
+  <a href="#rsvp">RSVP</a>
+  <a href="#desk">Desk</a>
+  <button class="cta" onclick="location.hash='#rsvp'">Get a Lab Pass</button>
+</nav>
+<header class="wrap hero" id="top">
+  <div>
+    <div class="kicker">SESSION 01 · LIVE STUDIO</div>
+    <h1>Turn a knob.<br>Watch structure appear.</h1>
+    <p class="lead">GROK LAB folds probability, primes, fractals, life, waves, matter, and symmetry into one teaching playground. Shared primitive: parameter in, living picture out.</p>
+    <div class="row">
+      <button class="btn pri" onclick="location.hash='#labs'">Enter the labs</button>
+      <button class="btn" onclick="location.hash='#agenda'">See the agenda</button>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="kicker">COUNTDOWN TO SESSION 01</div>
+    <div class="count" id="count"></div>
+    <p class="kbd">20 Sep 2026 · 19:00 PT · Explorer seats open</p>
+  </div>
+</header>
+<section class="wrap" id="agenda">
+  <div class="kicker">AGENDA</div>
+  <h2>What this session teaches</h2>
+  <div class="grid g3" id="filters"></div>
+</section>
+<section class="wrap" id="labs">
+  <div class="kicker">LABS</div>
+  <p class="lead">Filter by family or scroll. Every module shares play / pause / reset / speed energy.</p>
+
+  <article class="lab card" id="chance" data-family="Math">
+    <h2>Chance</h2>
+    <p>Dice and coin trials versus theory. Watch the histogram converge.</p>
+    <div class="row">
+      <select id="chanceMode"><option value="coin">Coin</option><option value="dice">Die (6)</option></select>
+      <label class="sl">Trials <input id="chanceN" type="number" value="200" min="1" max="5000" style="width:80px"></label>
+      <label class="sl">Speed <input id="chanceSp" type="range" min="1" max="40" value="12"></label>
+      <button class="btn pri" id="chanceRun">Run</button>
+      <button class="btn" id="chanceReset">Reset</button>
+    </div>
+    <div class="bars" id="chanceBars"></div>
+    <p>Observed vs theory: <span class="stat" id="chanceOut">—</span></p>
+  </article>
+
+  <article class="lab card" id="primes" data-family="Math">
+    <h2>Primes</h2>
+    <p>Sieve of Eratosthenes. Click a composite to see its factors.</p>
+    <div class="row">
+      <label class="sl">Range <input id="primeMax" type="number" value="100" min="20" max="300" style="width:80px"></label>
+      <button class="btn pri" id="primePlay">Play</button>
+      <button class="btn" id="primeStep">Step</button>
+      <button class="btn" id="primeReset">Reset</button>
+    </div>
+    <div id="primeGrid" class="grid" style="grid-template-columns:repeat(10,1fr);gap:4px"></div>
+    <p>Primes found: <span class="stat" id="primeList"></span></p>
+    <p id="primeFact" class="kbd"></p>
+  </article>
+
+  <article class="lab card" id="infinity" data-family="Math">
+    <h2>Infinity</h2>
+    <p>Mandelbrot: click to zoom, drag to pan. Tree: grow, wind, blossom.</p>
+    <div class="row">
+      <label class="sl">Iterations <input id="mIter" type="range" min="40" max="250" value="80"></label>
+      <button class="btn" id="mReset">Reset view</button>
+      <select id="mPreset"><option value="home">Home</option><option value="seahorse">Seahorse</option><option value="spiral">Spiral</option><option value="mini">Mini Mandelbrot</option></select>
+    </div>
+    <canvas id="mandel" width="900" height="420"></canvas>
+    <div class="row">
+      <label class="sl">Angle <input id="tAng" type="range" min="10" max="45" value="22"></label>
+      <label class="sl">Depth <input id="tDep" type="range" min="4" max="12" value="8"></label>
+      <label class="sl">Length <input id="tLen" type="range" min="40" max="120" value="78"></label>
+      <button class="btn" id="tRegen">Regenerate</button>
+      <label class="sl"><input type="checkbox" id="tLeaf" checked> blossoms</label>
+    </div>
+    <canvas id="tree" width="900" height="380"></canvas>
+  </article>
+
+  <article class="lab card" id="life" data-family="Math">
+    <h2>Life</h2>
+    <p>Paint cells. Run Conway. Presets: glider, pulsar, gosper gun.</p>
+    <div class="row">
+      <button class="btn pri" id="lifePlay">Play</button>
+      <button class="btn" id="lifeStep">Step</button>
+      <button class="btn" id="lifeClear">Clear</button>
+      <button class="btn" id="lifeRand">Randomize</button>
+      <select id="lifePre"><option>glider</option><option>pulsar</option><option>gosper</option></select>
+      <label class="sl">Speed <input id="lifeSp" type="range" min="1" max="20" value="8"></label>
+      <span class="stat" id="lifeGen">gen 0</span>
+    </div>
+    <canvas id="life" width="900" height="360"></canvas>
+  </article>
+
+  <article class="lab card" id="waves" data-family="Sound">
+    <h2>Waves</h2>
+    <p>Fourier epicycles, mouse theremin (X=pitch, Y=volume), 16-step drums, file/mic visualizer. One audio bus.</p>
+    <div class="row">
+      <label class="sl">Terms <input id="fTerms" type="range" min="1" max="24" value="8"></label>
+      <label class="sl">Speed <input id="fSp" type="range" min="1" max="20" value="6"></label>
+      <button class="btn pri" id="fPlay">Play</button>
+      <select id="fShape"><option>square</option><option>saw</option><option>pulse</option></select>
+    </div>
+    <canvas id="fourier" width="900" height="280"></canvas>
+    <div class="row">
+      <button class="btn pri" id="thOn">Theremin</button>
+      <select id="thWave"><option>sine</option><option>triangle</option><option>square</option><option>sawtooth</option></select>
+      <label class="sl"><input type="checkbox" id="thRev" checked> reverb</label>
+      <span class="stat" id="thPitch">— Hz</span>
+    </div>
+    <canvas id="theremin" width="900" height="180"></canvas>
+    <div class="row">
+      <button class="btn pri" id="drumPlay">Drums</button>
+      <label class="sl">BPM <input id="bpm" type="range" min="70" max="160" value="120"></label>
+      <label class="sl">Swing <input id="swing" type="range" min="0" max="40" value="8"></label>
+      <button class="btn" id="drumRand">Randomize</button>
+      <button class="btn" id="drumClear">Clear</button>
+    </div>
+    <div id="drumGrid"></div>
+    <div class="row">
+      <button class="btn" id="vizMic">Mic</button>
+      <input type="file" id="vizFile" accept="audio/*">
+      <button class="btn" id="vizPause">Pause file</button>
+      <label class="sl">Sens <input id="vizSens" type="range" min="0.4" max="3" step="0.1" value="1.2"></label>
+      <select id="vizMode"><option>bars</option><option>circle</option></select>
+      <button class="btn" id="vizFull">Fullscreen</button>
+    </div>
+    <canvas id="viz" width="900" height="220"></canvas>
+  </article>
+
+  <article class="lab card" id="matter" data-family="Matter">
+    <h2>Matter</h2>
+    <p>Drop spheres, boxes, and cylinders. Drag bodies. Gravity and bounce are live.</p>
+    <div class="row">
+      <button class="btn pri" id="pBall">Sphere</button>
+      <button class="btn" id="pBox">Box</button>
+      <button class="btn" id="pCyl">Cylinder</button>
+      <button class="btn danger" id="pClear">Clear</button>
+      <label class="sl">Gravity <input id="pG" type="range" min="0.1" max="1.4" step="0.05" value="0.55"></label>
+      <label class="sl">Restitution <input id="pR" type="range" min="0" max="0.95" step="0.05" value="0.45"></label>
+    </div>
+    <canvas id="phys" width="900" height="380"></canvas>
+  </article>
+
+  <article class="lab card" id="symmetry" data-family="Play">
+    <h2>Symmetry</h2>
+    <p>Pointer motion mirrored into a kaleidoscope. Freeze, randomize, export.</p>
+    <div class="row">
+      <label class="sl">Segments <input id="kSeg" type="range" min="3" max="16" value="8"></label>
+      <select id="kMode"><option>neon</option><option>ink</option><option>sunset</option></select>
+      <button class="btn" id="kFreeze">Freeze</button>
+      <button class="btn" id="kRand">Randomize</button>
+      <button class="btn" id="kExp">Export</button>
+    </div>
+    <canvas id="kaleido" width="900" height="420"></canvas>
+  </article>
+</section>
+
+<section class="wrap" id="desk">
+  <div class="kicker">DESK</div>
+  <h2>Local tools that remember</h2>
+  <div class="grid g2">
+    <article class="card" id="poll">
+      <h3>Live poll</h3>
+      <input id="pollQ" placeholder="Question" style="width:100%;margin:6px 0;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+      <input id="pollOpts" placeholder="Options, comma separated" style="width:100%;margin:6px 0;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+      <div class="row"><button class="btn pri" id="pollNew">New poll</button><button class="btn" id="pollReset">Reset votes</button></div>
+      <div id="pollBox"></div>
+      <p>Total: <span class="stat" id="pollTot">0</span></p>
+    </article>
+    <article class="card" id="budget">
+      <h3>Budget</h3>
+      <div class="row">
+        <input id="txName" placeholder="Label" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+        <input id="txAmt" type="number" placeholder="Amount" style="width:100px;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+        <select id="txCat"><option>income</option><option>rent</option><option>food</option><option>tools</option><option>other</option></select>
+        <button class="btn pri" id="txAdd">Add</button>
+      </div>
+      <label class="sl">Savings goal <input id="goal" type="number" value="1000" style="width:100px"></label>
+      <p>Balance <span class="stat" id="bal">0</span> · remaining to goal <span class="stat" id="remain">0</span></p>
+      <div class="bars" id="budBars" style="height:90px"></div>
+      <div id="txList"></div>
+    </article>
+  </div>
+  <article class="card" id="kanban" style="margin-top:14px">
+    <h3>Kanban</h3>
+    <div class="row"><input id="kTitle" placeholder="Title" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)"><input id="kDesc" placeholder="Description" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)"><button class="btn pri" id="kAdd">Add card</button></div>
+    <div class="cols" id="board"></div>
+  </article>
+</section>
+
+<section class="wrap" id="tickets">
+  <div class="kicker">ACCESS TIERS</div>
+  <div class="grid g3">
+    <div class="card"><h3>Explorer</h3><p class="stat">Free</p><p>All labs in the browser. Local-only memory.</p><p class="kbd">Open capacity</p></div>
+    <div class="card" style="border-color:var(--lime)"><h3>Lab Pass</h3><p class="stat">RSVP</p><p>Session 01 seat + agenda pings.</p><p class="kbd">48 / 80 seats</p></div>
+    <div class="card"><h3>Patron</h3><p class="stat">Founding</p><p>Next-session labs: terrain flyer + vector field.</p><p class="kbd">Waitlist</p></div>
+  </div>
+</section>
+
+<section class="wrap grid g2" id="venue">
+  <article class="card">
+    <h3>Venue</h3>
+    <div class="map">Map placeholder · GROK LAB / anywhere a browser runs</div>
+  </article>
+  <article class="card" id="rsvp">
+    <h3>RSVP / signup</h3>
+    <form id="rsvpForm" name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot">
+      <input type="hidden" name="form-name" value="rsvp">
+      <p class="hidden"><input name="bot"></p>
+      <input name="name" required placeholder="Name" style="width:100%;margin:6px 0;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+      <input name="email" type="email" required placeholder="Email" style="width:100%;margin:6px 0;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)">
+      <select name="tier" style="width:100%;margin:6px 0;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0b0b12;color:var(--ink)"><option>Explorer</option><option>Lab Pass</option><option>Patron waitlist</option></select>
+      <button class="btn pri" type="submit">Reserve seat</button>
+    </form>
+  </article>
+</section>
+
+<section class="wrap">
+  <div class="kicker">FIELD NOTES</div>
+  <div class="grid g3">
+    <div class="card"><p>“The histogram is the whole lecture.”</p><p class="kbd">— Chance desk</p></div>
+    <div class="card"><p>“Zoom once and infinity stops being a metaphor.”</p><p class="kbd">— Infinity desk</p></div>
+    <div class="card"><p>“If you can hear the square wave in the circles, Fourier clicked.”</p><p class="kbd">— Waves desk</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="kicker">NEXT SESSION</div>
+  <div class="grid g2">
+    <div class="card"><h3>Terrain flyer</h3><p>Low-poly 3D, mouse-look, thrust, ground collision, day/night.</p></div>
+    <div class="card"><h3>Vector field</h3><p>Editable equation, animated particles, hover readout.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">GROK LAB · primitives for a Grok app · local state only · <a href="https://github.com/Vagblasterxl/grok-lab">source</a></div>
+</footer>
+<div class="toast" id="toast">Saved.</div>
+
+<script>
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const toast = (m)=>{const t=$('#toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+const store = {
+  get:(k,d)=>{try{return JSON.parse(localStorage.getItem('groklab.'+k))??d}catch(e){return d}},
+  set:(k,v)=>localStorage.setItem('groklab.'+k,JSON.stringify(v))
+};
+
+/* countdown */
+(function(){
+  const end = Date.parse('2026-09-21T02:00:00Z');
+  const el = $('#count');
+  const tick=()=>{
+    let s=Math.max(0,end-Date.now());
+    const d=Math.floor(s/86400000);s%=86400000;
+    const h=Math.floor(s/3600000);s%=3600000;
+    const m=Math.floor(s/60000);s%=60000;
+    const sec=Math.floor(s/1000);
+    el.innerHTML=`<div><b>${d}</b><span>days</span></div><div><b>${h}</b><span>hours</span></div><div><b>${m}</b><span>min</span></div><div><b>${sec}</b><span>sec</span></div>`;
+  };
+  tick();setInterval(tick,1000);
+})();
+
+/* filter chips */
+(function(){
+  const fams=['All','Math','Sound','Matter','Play','Desk'];
+  const box=$('#filters');
+  fams.forEach((f,i)=>{
+    const c=document.createElement('button');c.className='chip'+(i===0?' on':'');c.textContent=f;
+    c.onclick=()=>{$$('.chip',box).forEach(x=>x.classList.remove('on'));c.classList.add('on');
+      $$('[data-family]').forEach(el=>el.style.display=(f==='All'||el.dataset.family===f)?'':'none');
+    };
+    box.appendChild(c);
+  });
+})();
+
+/* Chance */
+(function(){
+  let counts=[], running=false;
+  const mode=()=>$('#chanceMode').value;
+  const bins=()=>mode()==='coin'?2:6;
+  const theory=()=>1/bins();
+  const draw=()=>{
+    const n=counts.reduce((a,b)=>a+b,0)||1;
+    $('#chanceBars').innerHTML=counts.map((c,i)=>`<i style="height:${Math.max(2,c/n*150)}px" title="${i+1}: ${c}"></i>`).join('');
+    const obs=counts.map(c=>(c/n).toFixed(3)).join(', ');
+    $('#chanceOut').textContent=`n=${counts.reduce((a,b)=>a+b,0)} · obs [${obs}] · theory ${theory().toFixed(3)} each`;
+  };
+  const reset=()=>{counts=Array(bins()).fill(0);draw()};
+  $('#chanceMode').onchange=reset;
+  $('#chanceReset').onclick=()=>{running=false;reset()};
+  $('#chanceRun').onclick=()=>{
+    if(running){running=false;return}
+    running=true; let left=Math.max(1,+($('#chanceN').value)||200);
+    const step=()=>{
+      if(!running||left<=0){running=false;return}
+      const batch=Math.min(left,+($('#chanceSp').value));
+      for(let i=0;i<batch;i++) counts[Math.floor(Math.random()*bins())]++;
+      left-=batch; draw(); requestAnimationFrame(step);
+    };
+    if(!counts.length) reset(); step();
+  };
+  reset();
+})();
+
+/* Primes */
+(function(){
+  let max=100, mark=[], cur=2, play=false, primes=[];
+  const grid=$('#primeGrid');
+  const build=()=>{
+    max=+($('#primeMax').value)||100; mark=Array(max+1).fill(0); cur=2; primes=[]; play=false;
+    grid.innerHTML='';
+    for(let n=1;n<=max;n++){
+      const b=document.createElement('button');b.className='btn';b.textContent=n;b.dataset.n=n;
+      b.onclick=()=>{
+        const n=+b.dataset.n; if(n<2) return;
+        const f=[]; let x=n; for(let p=2;p*p<=x;p++) while(x%p===0){f.push(p);x/=p} if(x>1)f.push(x);
+        $('#primeFact').textContent = f.length===1 ? n+' is prime' : n+' = '+f.join(' × ');
+      };
+      grid.appendChild(b);
+    }
+    $('#primeList').textContent='';
+  };
+  const paint=()=>{
+    $$('#primeGrid .btn').forEach(b=>{
+      const n=+b.dataset.n;
+      if(n===1) b.style.opacity=.4;
+      else if(mark[n]===2){b.style.background='var(--lime)';b.style.color='#111'}
+      else if(mark[n]===1){b.style.background='#3a2030';b.style.color='var(--rose)'}
+    });
+    $('#primeList').textContent=primes.join(', ');
+  };
+  const step=()=>{
+    while(cur<=max && mark[cur]) cur++;
+    if(cur>max){play=false;return}
+    mark[cur]=2; primes.push(cur);
+    for(let k=cur*cur;k<=max;k+=cur) mark[k]=1;
+    cur++; paint();
+  };
+  $('#primePlay').onclick=()=>{play=!play; const loop=()=>{if(!play)return;step();setTimeout(loop,120)};loop()};
+  $('#primeStep').onclick=step; $('#primeReset').onclick=build; $('#primeMax').onchange=build; build();
+})();
+
+/* Mandelbrot */
+(function(){
+  const c=$('#mandel'), ctx=c.getContext('2d');
+  let x0=-2.2,x1=1.2,y0=-1.2,y1=1.2, drag=null;
+  const presets={home:[-2.2,1.2,-1.2,1.2],seahorse:[-0.75,-0.74,0.1,0.12],spiral:[-0.75,-0.73,0.1,0.13],mini:[-1.79,-1.73,-0.03,0.03]};
+  const render=()=>{
+    const it=+($('#mIter').value), w=c.width,h=c.height, img=ctx.createImageData(w,h);
+    for(let py=0;py<h;py++){
+      const y=y0+(y1-y0)*py/h;
+      for(let px=0;px<w;px++){
+        const x=x0+(x1-x0)*px/w; let zr=0,zi=0,i=0;
+        while(zr*zr+zi*zi<=4 && i<it){const nr=zr*zr-zi*zi+x; zi=2*zr*zi+y; zr=nr; i++}
+        const p=(py*w+px)*4, t=i/it;
+        img.data[p]=i===it?0:Math.floor(20+180*Math.pow(t,0.4));
+        img.data[p+1]=i===it?0:Math.floor(40+200*t);
+        img.data[p+2]=i===it?20:Math.floor(80+160*(1-t));
+        img.data[p+3]=255;
+      }
+    }
+    ctx.putImageData(img,0,0);
+  };
+  const zoom=(cx,cy,s)=>{
+    const mx=x0+(x1-x0)*cx/c.width, my=y0+(y1-y0)*cy/c.height;
+    const wx=(x1-x0)*s, wy=(y1-y0)*s; x0=mx-wx/2; x1=mx+wx/2; y0=my-wy/2; y1=my+wy/2; render();
+  };
+  c.onclick=e=>{const r=c.getBoundingClientRect(); zoom((e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height,0.45)};
+  c.onmousedown=e=>{drag=[e.clientX,e.clientY,x0,x1,y0,y1]};
+  window.addEventListener('mouseup',()=>drag=null);
+  window.addEventListener('mousemove',e=>{
+    if(!drag) return;
+    const r=c.getBoundingClientRect();
+    const dx=(e.clientX-drag[0])/r.width*(drag[3]-drag[2]);
+    const dy=(e.clientY-drag[1])/r.height*(drag[5]-drag[4]);
+    x0=drag[2]-dx;x1=drag[3]-dx;y0=drag[4]-dy;y1=drag[5]-dy; render();
+  });
+  $('#mReset').onclick=()=>{[x0,x1,y0,y1]=presets.home;render()};
+  $('#mPreset').onchange=()=>{const p=presets[$('#mPreset').value]; if(p){[x0,x1,y0,y1]=p;render()}};
+  $('#mIter').oninput=render; render();
+})();
+
+/* Tree */
+(function(){
+  const c=$('#tree'), ctx=c.getContext('2d');
+  let seed=1, t=0;
+  const rnd=()=> (seed=(seed*16807)%2147483647)/2147483647;
+  const draw=()=>{
+    ctx.fillStyle='#0b0b12'; ctx.fillRect(0,0,c.width,c.height);
+    const ang=+($('#tAng').value)*Math.PI/180, dep=+($('#tDep').value), len=+($('#tLen').value);
+    const wind=Math.sin(t/40)*0.12;
+    seed=12345;
+    const branch=(x,y,a,d,l)=>{
+      if(d===0||l<3){ if($('#tLeaf').checked){ctx.fillStyle='#ff6b9d';ctx.beginPath();ctx.arc(x,y,3,0,6.28);ctx.fill()} return; }
+      const x2=x+Math.cos(a)*l, y2=y+Math.sin(a)*l;
+      ctx.strokeStyle=`hsl(${90+d*8},70%,${40+d*4}%)`; ctx.lineWidth=Math.max(1,d*0.7);
+      ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke();
+      branch(x2,y2,a-ang+wind,d-1,l*0.72);
+      branch(x2,y2,a+ang+wind*0.6,d-1,l*0.7);
+      if(rnd()>0.7) branch(x2,y2,a+wind,d-1,l*0.6);
+    };
+    branch(c.width/2,c.height-10,-Math.PI/2,dep,len);
+  };
+  $('#tRegen').onclick=()=>{seed=Math.random()*1e6;draw()};
+  ['tAng','tDep','tLen','tLeaf'].forEach(id=>$('#'+id).oninput=draw);
+  const loop=()=>{t++;draw();requestAnimationFrame(loop)}; loop();
+})();
+
+/* Life */
+(function(){
+  const c=$('#life'), ctx=c.getContext('2d'), W=90,H=36;
+  let g=Array.from({length:H},()=>Array(W).fill(0)), play=false, gen=0, paint=false;
+  const draw=()=>{ctx.fillStyle='#0b0b12';ctx.fillRect(0,0,c.width,c.height);const cw=c.width/W,ch=c.height/H;
+    ctx.fillStyle='#d6ff4a'; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(g[y][x]) ctx.fillRect(x*cw,y*ch,cw-1,ch-1);
+    $('#lifeGen').textContent='gen '+gen};
+  const step=()=>{const n=g.map(r=>r.slice());
+    for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+      let s=0; for(let j=-1;j<=1;j++) for(let i=-1;i<=1;i++) if(i||j) s+=g[(y+j+H)%H][(x+i+W)%W];
+      n[y][x]=s===3||(g[y][x]&&s===2)?1:0;
+    } g=n; gen++; draw()};
+  const put=(name)=>{
+    g=Array.from({length:H},()=>Array(W).fill(0)); gen=0;
+    const set=(x,y)=>g[y][x]=1;
+    if(name==='glider'){[[1,0],[2,1],[0,2],[1,2],[2,2]].forEach(([x,y])=>set(x+8,y+8))}
+    if(name==='pulsar'){const p=[2,3,4,8,9,10]; for(const k of [0,5,7,12]) p.forEach(v=>{set(20+v,8+k);set(20+k,8+v)})}
+    if(name==='gosper'){const cells=[[1,5],[1,6],[2,5],[2,6],[11,5],[11,6],[11,7],[12,4],[12,8],[13,3],[13,9],[14,3],[14,9],[15,6],[16,4],[16,8],[17,5],[17,6],[17,7],[18,6],[21,3],[21,4],[21,5],[22,3],[22,4],[22,5],[23,2],[23,6],[25,1],[25,2],[25,6],[25,7],[35,3],[35,4],[36,3],[36,4]]; cells.forEach(([x,y])=>set(x+4,y+8))}
+    draw();
+  };
+  const cell=(e)=>{const r=c.getBoundingClientRect(); return [Math.floor((e.clientX-r.left)/r.width*W), Math.floor((e.clientY-r.top)/r.height*H)]};
+  c.onmousedown=e=>{paint=true;const [x,y]=cell(e); if(g[y]) g[y][x]^=1; draw()};
+  c.onmousemove=e=>{if(!paint)return; const [x,y]=cell(e); if(g[y]) g[y][x]=1; draw()};
+  window.addEventListener('mouseup',()=>paint=false);
+  $('#lifePlay').onclick=()=>{play=!play; const loop=()=>{if(!play)return; step(); setTimeout(loop, 420-$('#lifeSp').value*18)}; loop()};
+  $('#lifeStep').onclick=step; $('#lifeClear').onclick=()=>{g=Array.from({length:H},()=>Array(W).fill(0));gen=0;draw()};
+  $('#lifeRand').onclick=()=>{g=g.map(r=>r.map(()=>Math.random()>0.78?1:0));gen=0;draw()};
+  $('#lifePre').onchange=()=>put($('#lifePre').value);
+  put('glider');
+})();
+
+/* Audio bus + Fourier + Theremin + Drums + Viz */
+const AudioBus=(()=>{
+  let ctx, master, conv, analyser;
+  const boot=()=>{
+    if(ctx) return ctx;
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain(); master.gain.value=0.35; master.connect(ctx.destination);
+    analyser=ctx.createAnalyser(); analyser.fftSize=256; master.connect(analyser);
+    conv=ctx.createConvolver();
+    const buf=ctx.createBuffer(2,ctx.sampleRate*1.2,ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.4)}
+    conv.buffer=buf; const cg=ctx.createGain(); cg.gain.value=0.25; conv.connect(cg); cg.connect(master);
+    return ctx;
+  };
+  return {
+    boot, ctx:()=>ctx, master:()=>master, conv:()=>conv, analyser:()=>analyser,
+    beep(type,f,dur,g=0.2){boot(); const o=ctx.createOscillator(), gn=ctx.createGain(); o.type=type; o.frequency.value=f; gn.gain.setValueAtTime(g,ctx.currentTime); gn.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur); o.connect(gn); gn.connect(master); o.start(); o.stop(ctx.currentTime+dur)}
+  };
+})();
+
+/* Fourier */
+(function(){
+  const c=$('#fourier'), ctx=c.getContext('2d');
+  let play=true, t=0, trail=[];
+  const coeff=(kind,n)=>{
+    if(kind==='square') return n%2?4/(Math.PI*n):0;
+    if(kind==='saw') return (n?2/n:0)*(n%2?1:-1);
+    return n%2? (n%4===1?1:-1)*4/(Math.PI*n):0;
+  };
+  const loop=()=>{
+    const terms=+($('#fTerms').value), sp=+($('#fSp').value), kind=$('#fShape').value;
+    ctx.fillStyle='#0b0b12'; ctx.fillRect(0,0,c.width,c.height);
+    let x=180,y=c.height/2;
+    ctx.strokeStyle='#9b7dff'; ctx.beginPath(); ctx.moveTo(x,y);
+    for(let n=1;n<=terms;n++){
+      const a=coeff(kind,n); if(!a) continue;
+      const r=Math.abs(a)*48, ang=n*t;
+      const nx=x+Math.cos(ang)*r*(a<0?-1:1), ny=y+Math.sin(ang)*r;
+      ctx.strokeStyle='rgba(155,125,255,.7)'; ctx.beginPath(); ctx.arc(x,y,r,0,6.28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(nx,ny); ctx.stroke();
+      x=nx; y=ny;
+    }
+    trail.push([x,y]); if(trail.length>240) trail.shift();
+    ctx.strokeStyle='#d6ff4a'; ctx.beginPath();
+    trail.forEach((p,i)=>{const xx=260+i*2.4; if(i) ctx.lineTo(xx,p[1]); else ctx.moveTo(xx,p[1])}); ctx.stroke();
+    if(play) t+=0.02*sp; requestAnimationFrame(loop);
+  };
+  $('#fPlay').onclick=()=>play=!play; loop();
+})();
+
+/* Theremin */
+(function(){
+  const c=$('#theremin'), ctx=c.getContext('2d');
+  let osc=null, gain=null, on=false;
+  const draw=(px,py)=>{
+    ctx.fillStyle='#0b0b12'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.strokeStyle='#2a2a38'; for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(i*c.width/8,0);ctx.lineTo(i*c.width/8,c.height);ctx.stroke()}
+    ctx.fillStyle='#d6ff4a'; ctx.beginPath(); ctx.arc(px,py,8,0,6.28); ctx.fill();
+    ctx.fillStyle='#9b9688'; ctx.fillText('LOW',8,c.height-8); ctx.fillText('HIGH',c.width-40,c.height-8); ctx.fillText('LOUD',8,14);
+  };
+  draw(c.width/2,c.height/2);
+  const freq=(x)=>110*Math.pow(2, x/c.width*3);
+  c.onmousemove=e=>{
+    const r=c.getBoundingClientRect(); const x=(e.clientX-r.left)*c.width/r.width, y=(e.clientY-r.top)*c.height/r.height;
+    draw(x,y);
+    if(!on||!osc) return;
+    osc.frequency.setTargetAtTime(freq(x), AudioBus.ctx().currentTime, 0.03);
+    gain.gain.setTargetAtTime(Math.max(0.001,(1-y/c.height)*0.35), AudioBus.ctx().currentTime, 0.03);
+    $('#thPitch').textContent=freq(x).toFixed(1)+' Hz';
+  };
+  $('#thOn').onclick=()=>{
+    AudioBus.boot();
+    on=!on;
+    if(on){
+      osc=AudioBus.ctx().createOscillator(); gain=AudioBus.ctx().createGain(); gain.gain.value=0.001;
+      osc.type=$('#thWave').value; osc.connect(gain);
+      if($('#thRev').checked) gain.connect(AudioBus.conv());
+      gain.connect(AudioBus.master()); osc.start();
+    } else { try{osc.stop()}catch(e){} osc=null; }
+  };
+  $('#thWave').onchange=()=>{if(osc) osc.type=$('#thWave').value};
+})();
+
+/* Drums */
+(function(){
+  const names=['kick','snare','hat','perc'];
+  let patt=store.get('drum', names.map(()=>Array(16).fill(0))), play=false, step=0, tHandle;
+  const box=$('#drumGrid');
+  const render=()=>{
+    box.innerHTML='';
+    names.forEach((n,ri)=>{
+      const row=document.createElement('div'); row.className='row'; row.innerHTML=`<b style="width:56px">${n}</b>`;
+      patt[ri].forEach((v,ci)=>{
+        const b=document.createElement('button'); b.className='btn'+(v?' pri':'')+(play&&ci===step?' play':'');
+        b.style.width='28px'; b.onclick=()=>{patt[ri][ci]^=1; store.set('drum',patt); render()};
+        row.appendChild(b);
+      });
+      box.appendChild(row);
+    });
+  };
+  const hit=s=>{
+    if(patt[0][s]) AudioBus.beep('sine', 70, 0.18, 0.4);
+    if(patt[1][s]) AudioBus.beep('square', 180, 0.12, 0.18);
+    if(patt[2][s]) AudioBus.beep('triangle', 900, 0.05, 0.1);
+    if(patt[3][s]) AudioBus.beep('sawtooth', 320, 0.08, 0.12);
+  };
+  const tick=()=>{
+    hit(step); step=(step+1)%16; render();
+    const sw=+($('#swing').value)/100; const base=60000/(+$('#bpm').value)/4;
+    const delay=base*((step%2)?1+sw:1-sw);
+    if(play) tHandle=setTimeout(tick, delay);
+  };
+  $('#drumPlay').onclick=()=>{AudioBus.boot(); play=!play; if(play) tick(); else clearTimeout(tHandle)};
+  $('#drumRand').onclick=()=>{patt=patt.map(r=>r.map(()=>Math.random()>0.72?1:0)); store.set('drum',patt); render()};
+  $('#drumClear').onclick=()=>{patt=names.map(()=>Array(16).fill(0)); store.set('drum',patt); render()};
+  render();
+})();
+
+/* Visualizer */
+(function(){
+  const c=$('#viz'), ctx=c.getContext('2d');
+  let src=null, audioEl=null;
+  const loop=()=>{
+    const a=AudioBus.analyser(); if(a){
+      const data=new Uint8Array(a.frequencyBinCount); a.getByteFrequencyData(data);
+      const sens=+($('#vizSens').value); ctx.fillStyle='#0b0b12'; ctx.fillRect(0,0,c.width,c.height);
+      if($('#vizMode').value==='bars'){
+        const w=c.width/data.length;
+        data.forEach((v,i)=>{ctx.fillStyle=`hsl(${120+i},80%,55%)`; ctx.fillRect(i*w, c.height-v*sens*0.7, w-1, v*sens*0.7)});
+      } else {
+        ctx.beginPath(); ctx.strokeStyle='#5ce1ff';
+        data.forEach((v,i)=>{const ang=i/data.length*6.28, r=40+v*sens*0.35; const x=c.width/2+Math.cos(ang)*r, y=c.height/2+Math.sin(ang)*r; i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
+        ctx.closePath(); ctx.stroke();
+      }
+    }
+    requestAnimationFrame(loop);
+  };
+  $('#vizMic').onclick=async()=>{AudioBus.boot(); const st=await navigator.mediaDevices.getUserMedia({audio:true}); const s=AudioBus.ctx().createMediaStreamSource(st); s.connect(AudioBus.analyser()); toast('Mic live')};
+  $('#vizFile').onchange=e=>{
+    AudioBus.boot(); const f=e.target.files[0]; if(!f) return;
+    if(audioEl) audioEl.pause();
+    audioEl=new Audio(URL.createObjectURL(f)); audioEl.crossOrigin='anonymous'; audioEl.loop=true; audioEl.play();
+    const s=AudioBus.ctx().createMediaElementSource(audioEl); s.connect(AudioBus.master());
+  };
+  $('#vizPause').onclick=()=>{if(audioEl){ if(audioEl.paused) audioEl.play(); else audioEl.pause(); }};
+  $('#vizFull').onclick=()=>c.requestFullscreen?.();
+  loop();
+})();
+
+/* Physics */
+(function(){
+  const c=$('#phys'), ctx=c.getContext('2d');
+  let bodies=[], drag=null;
+  const spawn=(type)=>{
+    bodies.push({type,x:80+Math.random()*740,y:40,vx:(Math.random()-.5)*2,vy:0,w:type==='box'?28:22,h:type==='cyl'?34:22,r:16});
+  };
+  const loop=()=>{
+    const g=+($('#pG').value), rest=+($('#pR').value);
+    ctx.fillStyle='#0b0b12'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#1b1b28'; ctx.fillRect(0,c.height-12,c.width,12);
+    bodies.forEach(b=>{
+      if(drag!==b){ b.vy+=g; b.x+=b.vx; b.y+=b.vy; b.vx*=0.995; }
+      const floor=c.height-12-(b.type==='box'?b.h/2:b.r);
+      if(b.y>floor){ b.y=floor; b.vy*=-rest; b.vx*=0.9; }
+      if(b.x<16){b.x=16;b.vx*=-rest} if(b.x>c.width-16){b.x=c.width-16;b.vx*=-rest}
+      ctx.fillStyle=b.type==='box'? '#9b7dff': b.type==='cyl'? '#5ce1ff':'#d6ff4a';
+      if(b.type==='box'){ctx.fillRect(b.x-b.w/2,b.y-b.h/2,b.w,b.h)}
+      else {ctx.beginPath(); ctx.ellipse(b.x,b.y,b.r, b.type==='cyl'?b.r*1.3:b.r,0,0,6.28); ctx.fill()}
+    });
+    for(let i=0;i<bodies.length;i++) for(let j=i+1;j<bodies.length;j++){
+      const a=bodies[i],b=bodies[j], dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy)||1, min=30;
+      if(d<min){ const nx=dx/d,ny=dy/d, ov=min-d; a.x-=nx*ov/2; a.y-=ny*ov/2; b.x+=nx*ov/2; b.y+=ny*ov/2;
+        const dv= (a.vx-b.vx)*nx+(a.vy-b.vy)*ny; if(dv>0){ const imp=dv*(1+rest); a.vx-=imp*nx; a.vy-=imp*ny; b.vx+=imp*nx; b.vy+=imp*ny; } }
+    }
+    requestAnimationFrame(loop);
+  };
+  const hit=(e)=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*c.width/r.width,y=(e.clientY-r.top)*c.height/r.height;
+    return bodies.find(b=>Math.hypot(b.x-x,b.y-y)<24)};
+  c.onmousedown=e=>{drag=hit(e)};
+  window.addEventListener('mousemove',e=>{if(!drag)return; const r=c.getBoundingClientRect(); drag.x=(e.clientX-r.left)*c.width/r.width; drag.y=(e.clientY-r.top)*c.height/r.height; drag.vx=drag.vy=0});
+  window.addEventListener('mouseup',()=>drag=null);
+  $('#pBall').onclick=()=>spawn('ball'); $('#pBox').onclick=()=>spawn('box'); $('#pCyl').onclick=()=>spawn('cyl');
+  $('#pClear').onclick=()=>bodies=[];
+  for(let i=0;i<6;i++) spawn(i%3===0?'box':i%3===1?'cyl':'ball');
+  loop();
+})();
+
+/* Kaleidoscope */
+(function(){
+  const c=$('#kaleido'), ctx=c.getContext('2d');
+  let freeze=false, last=null, hue=180;
+  const pal=()=>({neon:[hue,280],ink:[220,240],sunset:[20,50]}[$('#kMode').value]||[hue,280]);
+  ctx.fillStyle='#07070b'; ctx.fillRect(0,0,c.width,c.height);
+  c.onmousemove=e=>{
+    if(freeze) return;
+    const r=c.getBoundingClientRect(), x=(e.clientX-r.left)*c.width/r.width, y=(e.clientY-r.top)*c.height/r.height;
+    const seg=+($('#kSeg').value), [h1,h2]=pal();
+    ctx.save(); ctx.translate(c.width/2,c.height/2);
+    for(let i=0;i<seg;i++){
+      ctx.save(); ctx.rotate(i*Math.PI*2/seg); if(i%2) ctx.scale(1,-1);
+      ctx.strokeStyle=`hsl(${h1+(h2-h1)*(i/seg)},80%,60%)`; ctx.lineWidth=2; ctx.beginPath();
+      if(last) ctx.moveTo(last[0]-c.width/2,last[1]-c.height/2);
+      ctx.lineTo(x-c.width/2,y-c.height/2); ctx.stroke(); ctx.restore();
+    }
+    ctx.restore(); last=[x,y];
+  };
+  $('#kFreeze').onclick=()=>freeze=!freeze;
+  $('#kRand').onclick=()=>{hue=Math.random()*360; ctx.fillStyle='#07070b'; ctx.fillRect(0,0,c.width,c.height)};
+  $('#kExp').onclick=()=>{const a=document.createElement('a'); a.download='grok-lab-kaleido.png'; a.href=c.toDataURL(); a.click()};
+})();
+
+/* Poll */
+(function(){
+  let poll=store.get('poll',{q:'Which lab clicked first?',opts:['Chance','Infinity','Waves'],votes:[0,0,0],picked:null});
+  const draw=()=>{
+    $('#pollQ').value=poll.q; $('#pollOpts').value=poll.opts.join(', ');
+    const tot=poll.votes.reduce((a,b)=>a+b,0); $('#pollTot').textContent=tot;
+    $('#pollBox').innerHTML=poll.opts.map((o,i)=>{
+      const pct=tot?Math.round(100*poll.votes[i]/tot):0;
+      return `<button class="btn" ${poll.picked!=null?'disabled':''} data-i="${i}" style="width:100%;margin:6px 0;text-align:left;${poll.picked===i?'border-color:var(--lime)':''}">${o} — ${pct}%<div style="height:8px;background:#222;border-radius:9px;margin-top:6px"><div style="height:8px;width:${pct}%;background:var(--lime);border-radius:9px"></div></div></button>`;
+    }).join('');
+    $$('#pollBox button').forEach(b=>b.onclick=()=>{if(poll.picked!=null)return; poll.picked=+b.dataset.i; poll.votes[poll.picked]++; store.set('poll',poll); draw()});
+  };
+  $('#pollNew').onclick=()=>{poll={q:$('#pollQ').value||'Untitled',opts:$('#pollOpts').value.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6),votes:[],picked:null}; poll.votes=poll.opts.map(()=>0); store.set('poll',poll); draw(); toast('New poll')};
+  $('#pollReset').onclick=()=>{poll.votes=poll.opts.map(()=>0); poll.picked=null; store.set('poll',poll); draw()};
+  draw();
+})();
+
+/* Budget */
+(function(){
+  let txs=store.get('txs',[{n:'Starter float',a:1200,c:'income'}]);
+  const draw=()=>{
+    const goal=+($('#goal').value)||0;
+    const inc=txs.filter(t=>t.c==='income').reduce((s,t)=>s+ +t.a,0);
+    const exp=txs.filter(t=>t.c!=='income').reduce((s,t)=>s+ +t.a,0);
+    const bal=inc-exp; $('#bal').textContent=bal.toFixed(2); $('#remain').textContent=(goal-bal).toFixed(2);
+    const cats={}; txs.filter(t=>t.c!=='income').forEach(t=>cats[t.c]=(cats[t.c]||0)+ +t.a);
+    const max=Math.max(1,...Object.values(cats));
+    $('#budBars').innerHTML=Object.entries(cats).map(([k,v])=>`<i style="height:${v/max*80}px" title="${k}: ${v}"></i>`).join('')||'';
+    $('#txList').innerHTML=txs.map((t,i)=>`<div class="item">${t.n} · ${t.c} · ${t.a} <button class="btn" data-i="${i}">x</button></div>`).join('');
+    $$('#txList button').forEach(b=>b.onclick=()=>{txs.splice(+b.dataset.i,1); store.set('txs',txs); draw()});
+  };
+  $('#txAdd').onclick=()=>{txs.push({n:$('#txName').value||'item',a:+($('#txAmt').value)||0,c:$('#txCat').value}); store.set('txs',txs); draw(); toast('Logged')};
+  $('#goal').oninput=()=>{store.set('goal',$('#goal').value); draw()};
+  $('#goal').value=store.get('goal',1000); draw();
+})();
+
+/* Kanban */
+(function(){
+  let board=store.get('board',{todo:[{t:'Ship GROK LAB',d:'Combine the 19 briefs'}],doing:[{t:'Automation loop',d:'GitHub + Gmail + Netlify'}],done:[{t:'Lock product thesis',d:'Knob → living picture'}]});
+  const cols=['todo','doing','done'], label={todo:'To Do',doing:'Doing',done:'Done'};
+  const draw=()=>{
+    $('#board').innerHTML=cols.map(c=>`<div class="col" data-col="${c}"><b>${label[c]} · ${board[c].length}</b>${board[c].map((it,i)=>`<div class="item" draggable="true" data-col="${c}" data-i="${i}"><b>${it.t}</b><div class="kbd">${it.d||''}</div><button class="btn" data-del="${c}:${i}">delete</button></div>`).join('')}</div>`).join('');
+    $$('#board .item').forEach(el=>{
+      el.ondragstart=e=>e.dataTransfer.setData('text', el.dataset.col+'|'+el.dataset.i);
+    });
+    $$('#board .col').forEach(col=>{
+      col.ondragover=e=>e.preventDefault();
+      col.ondrop=e=>{e.preventDefault(); const [from,i]=e.dataTransfer.getData('text').split('|'); const item=board[from].splice(+i,1)[0]; board[col.dataset.col].push(item); store.set('board',board); draw()};
+    });
+    $$('#board [data-del]').forEach(b=>b.onclick=()=>{const [c,i]=b.dataset.del.split(':'); board[c].splice(+i,1); store.set('board',board); draw()});
+  };
+  $('#kAdd').onclick=()=>{board.todo.push({t:$('#kTitle').value||'Card',d:$('#kDesc').value||''}); store.set('board',board); draw(); toast('Card added')};
+  draw();
+})();
+
+/* RSVP */
+$('#rsvpForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target);
+  const rec=store.get('rsvps',[]); rec.push({name:fd.get('name'),email:fd.get('email'),tier:fd.get('tier'),at:Date.now()}); store.set('rsvps',rec);
+  toast('Seat reserved — see you in Session 01');
+  e.target.reset();
+});
+</script>
+</body>
+</html>
